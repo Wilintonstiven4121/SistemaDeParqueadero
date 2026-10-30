@@ -11,9 +11,7 @@ public class Main {
 
     static Scanner scanner = new Scanner(System.in);
 
-    // =====================================================
     // COMMIT 1: CREACION DEL PROYECTO Y MAIN
-    // =====================================================
 
     public static void main(String[] args) {
 
@@ -58,10 +56,6 @@ public class Main {
         scanner.close();
     }
 
-    // =====================================================
-    // VALIDACION DE OPCIONES DEL MENU
-    // =====================================================
-
     public static int leerEntero(String mensaje, int minimo, int maximo) {
 
         int numero;
@@ -89,35 +83,23 @@ public class Main {
         }
     }
 
-    // =====================================================
     // COMMIT 2: CONSTANTES, VARIABLES Y ARREGLOS INICIALES
-    // =====================================================
 
     static final int CAPACIDAD_TOTAL = 10;
-
-    // Tarifas para carros
 
     static final int TARIFA_HORA_CARRO = 4000;
     static final int TARIFA_DIA_CARRO = 30000;
 
-    // Tarifas para motos
-
     static final int TARIFA_HORA_MOTO = 2000;
     static final int TARIFA_DIA_MOTO = 15000;
-
-    // Horarios y condiciones
 
     static final int UMBRAL_HORAS_DIA = 8;
     static final int HORA_APERTURA = 8;
     static final int HORA_CIERRE = 22;
 
-    // Formato de fecha y hora
-
     static final DateTimeFormatter FORMATO_FECHA =
             DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm")
                     .withResolverStyle(ResolverStyle.STRICT);
-
-    // Arreglos para almacenar informacion de los vehiculos
 
     static String[] tiposVehiculo =
             new String[CAPACIDAD_TOTAL];
@@ -125,12 +107,8 @@ public class Main {
     static LocalDateTime[] fechasIngreso =
             new LocalDateTime[CAPACIDAD_TOTAL];
 
-    // Variables de ocupacion
-
     static int celdasOcupadas = 0;
     static int celdasLibres = CAPACIDAD_TOTAL;
-
-    // Variables de recaudo
 
     static long recaudoCarros = 0;
     static long recaudoMotos = 0;
@@ -184,7 +162,7 @@ public class Main {
                 + ingreso.format(FORMATO_FECHA));
     }
 
-    // BUSCAR CELDA DISPONIBLE
+    // COMMIT 4: CELDAS DISPONIBLES
 
     public static int celdaDisponible() {
 
@@ -197,8 +175,6 @@ public class Main {
 
         return -1;
     }
-
-    // VALIDAR FECHA Y HORA DE INGRESO
 
     public static LocalDateTime leerFechaHora(String mensaje) {
 
@@ -223,8 +199,6 @@ public class Main {
         }
     }
 
-    // METODOS PROVISIONALES DE LOS SIGUIENTES MODULOS
-
     public static void registroSalida() {
 
         System.out.println("\nModulo de registro de salida.");
@@ -241,4 +215,3 @@ public class Main {
     }
 
 }
-
