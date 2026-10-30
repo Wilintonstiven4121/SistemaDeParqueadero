@@ -20,7 +20,6 @@ public class Main {
         int opcion;
 
         do {
-
             System.out.println("\n===== SISTEMA DE PARQUEADERO =====");
             System.out.println("1. Registrar entrada");
             System.out.println("2. Registrar salida");
@@ -31,7 +30,6 @@ public class Main {
             opcion = leerEntero("Seleccione una opcion: ", 1, 5);
 
             switch (opcion) {
-
                 case 1:
                     registroEntrada();
                     break;
@@ -41,11 +39,11 @@ public class Main {
                     break;
 
                 case 3:
-                    reporteOcupacion();
+                    System.out.println("Modulo pendiente.");
                     break;
 
                 case 4:
-                    reporteFinanciero();
+                    System.out.println("Modulo pendiente.");
                     break;
 
                 case 5:
@@ -69,6 +67,7 @@ public class Main {
     static final int TARIFA_DIA_MOTO = 15000;
 
     static final int UMBRAL_HORAS_DIA = 8;
+
     static final int HORA_APERTURA = 8;
     static final int HORA_CIERRE = 22;
 
@@ -90,10 +89,9 @@ public class Main {
 
     // COMMIT 3: REGISTRO DE ENTRADA
 
-    public static void registroEntrada() {
+    static void registroEntrada() {
 
         if (celdasLibres == 0) {
-
             System.out.println("El parqueadero esta lleno.");
             return;
         }
@@ -119,7 +117,6 @@ public class Main {
         int posicion = celdaDisponible();
 
         if (posicion == -1) {
-
             System.out.println("No hay celdas disponibles.");
             return;
         }
@@ -139,7 +136,7 @@ public class Main {
 
     // COMMIT 4: CELDAS DISPONIBLES
 
-    public static int celdaDisponible() {
+    static int celdaDisponible() {
 
         for (int i = 0; i < CAPACIDAD_TOTAL; i++) {
 
@@ -153,17 +150,15 @@ public class Main {
 
     // COMMIT 5: VALIDACION DE DATOS
 
-    public static int leerEntero(
+    static int leerEntero(
             String mensaje, int minimo, int maximo) {
 
         while (true) {
 
             System.out.print(mensaje);
-
             String texto = scanner.nextLine().trim();
 
             try {
-
                 int numero = Integer.parseInt(texto);
 
                 if (numero >= minimo && numero <= maximo) {
@@ -180,18 +175,21 @@ public class Main {
         }
     }
 
-    public static LocalDateTime leerFechaHora(String mensaje) {
+    static LocalDateTime leerFechaHora(String mensaje) {
 
         while (true) {
 
             System.out.print(mensaje);
-
             String texto = scanner.nextLine().trim();
 
             try {
-
                 LocalDateTime fecha = LocalDateTime.parse(
                         texto, FORMATO_FECHA);
+
+                if (!fecha.format(FORMATO_FECHA).equals(texto)) {
+                    System.out.println("Formato de fecha incorrecto.");
+                    continue;
+                }
 
                 LocalTime hora = fecha.toLocalTime();
 
@@ -200,7 +198,6 @@ public class Main {
 
                     System.out.println(
                             "El horario permitido es de 08:00 a 22:00.");
-
                     continue;
                 }
 
@@ -216,7 +213,7 @@ public class Main {
 
     // COMMIT 6: REGISTRO DE SALIDA
 
-    public static void registroSalida() {
+    static void registroSalida() {
 
         System.out.println("\n--- REGISTRO DE SALIDA ---");
 
@@ -227,7 +224,6 @@ public class Main {
         int indice = celda - 1;
 
         if (tiposVehiculo[indice] == null) {
-
             System.out.println("La celda esta vacia.");
             return;
         }
@@ -245,14 +241,13 @@ public class Main {
             salida = leerFechaHora(
                     "Fecha y hora de salida (yyyy-MM-dd HH:mm): ");
 
-            if (!salida.isBefore(ingreso)) {
+            if (salida.isAfter(ingreso)) {
                 break;
             }
 
             System.out.println(
-                    "La salida no puede ser anterior al ingreso.");
+                    "La salida debe ser posterior al ingreso.");
         }
-
 
         liquidacion(
                 celda,
@@ -270,57 +265,53 @@ public class Main {
                 "La celda " + celda + " esta disponible.");
     }
 
-    public static void liquidacion(
+    // COMMIT 7: LIQUIDACION
+
+    static void liquidacion(
             int celda,
             LocalDateTime ingreso,
             LocalDateTime salida,
             String tipo) {
 
-        long minutos = ChronoUnit.MINUTES.between(
-                ingreso, salida);
+        long dias = ChronoUnit.DAYS.between(ingreso, salida);
 
-        long horas = Math.max(1, (minutos + 59) / 60);
+        LocalDateTime cursor = ingreso.plusDays(dias);
+
+        long minutosRestantes =
+                ChronoUnit.MINUTES.between(cursor, salida);
+
+        long horas = (minutosRestantes + 59) / 60;
 
         long tarifaHora;
         long tarifaDia;
 
         if (tipo.equals("Carro")) {
-
             tarifaHora = TARIFA_HORA_CARRO;
             tarifaDia = TARIFA_DIA_CARRO;
-
         } else {
-
             tarifaHora = TARIFA_HORA_MOTO;
             tarifaDia = TARIFA_DIA_MOTO;
         }
 
-        long total;
-
-        if (horas < UMBRAL_HORAS_DIA) {
-
-            total = horas * tarifaHora;
-
-        } else {
-
-            long dias = (horas + 23) / 24;
-
-            total = dias * tarifaDia;
+        if (horas >= UMBRAL_HORAS_DIA) {
+            dias++;
+            horas = 0;
         }
 
+        long valorDias = dias * tarifaDia;
+        long valorHoras = horas * tarifaHora;
+
+        long total = valorDias + valorHoras;
+
         if (tipo.equals("Carro")) {
-
             recaudoCarros += total;
-
         } else {
-
             recaudoMotos += total;
         }
 
-        System.out.println("\n===== LIQUIDACION =====");
-
+        System.out.println("\n========== FACTURA ==========");
         System.out.println("Celda: " + celda);
-        System.out.println("Vehiculo: " + tipo);
+        System.out.println("Tipo de vehiculo: " + tipo);
 
         System.out.println("Ingreso: "
                 + ingreso.format(FORMATO_FECHA));
@@ -328,23 +319,16 @@ public class Main {
         System.out.println("Salida: "
                 + salida.format(FORMATO_FECHA));
 
-        System.out.println("Tiempo de permanencia: "
-                + horas + " horas cobradas");
+        System.out.println("Dias cobrados: " + dias);
+        System.out.println("Valor por dias: $" + valorDias);
 
-        System.out.println("Valor a pagar: $"
-                + total);
+        System.out.println("Horas cobradas: " + horas);
+        System.out.println("Valor por horas: $" + valorHoras);
+
+        System.out.println("-----------------------------");
+        System.out.println("TOTAL A PAGAR: $" + total);
+        System.out.println("=============================");
 
         System.out.println("Pago registrado correctamente.");
     }
-
-    public static void reporteOcupacion() {
-
-        System.out.println("\nModulo de reporte de ocupacion.");
-    }
-
-    public static void reporteFinanciero() {
-
-        System.out.println("\nModulo de reporte financiero.");
-    }
-
 }
