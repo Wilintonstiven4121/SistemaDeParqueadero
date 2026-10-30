@@ -270,8 +270,6 @@ public class Main {
                 "La celda " + celda + " esta disponible.");
     }
 
-    // LIQUIDACION Y CALCULO DEL COBRO
-
     public static void liquidacion(
             int celda,
             LocalDateTime ingreso,
