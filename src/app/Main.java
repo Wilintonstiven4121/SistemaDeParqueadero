@@ -30,6 +30,7 @@ public class Main {
             opcion = leerEntero("Seleccione una opcion: ", 1, 5);
 
             switch (opcion) {
+
                 case 1:
                     registroEntrada();
                     break;
@@ -39,11 +40,11 @@ public class Main {
                     break;
 
                 case 3:
-                    System.out.println("Modulo pendiente.");
+                    reporteOcupacion();
                     break;
 
                 case 4:
-                    System.out.println("Modulo pendiente.");
+                    reporteFinanciero();
                     break;
 
                 case 5:
@@ -331,4 +332,25 @@ public class Main {
 
         System.out.println("Pago registrado correctamente.");
     }
+
+    // COMMIT 8: REPORTES
+
+    static void reporteOcupacion() {
+
+        System.out.println("\n--- REPORTE DE OCUPACION ---");
+        System.out.println("Capacidad total: " + CAPACIDAD_TOTAL);
+        System.out.println("Celdas ocupadas: " + celdasOcupadas);
+        System.out.println("Celdas libres: " + celdasLibres);
+    }
+
+    static void reporteFinanciero() {
+
+        long totalGeneral = recaudoCarros + recaudoMotos;
+
+        System.out.println("\n--- REPORTE FINANCIERO ---");
+        System.out.println("Recaudo por carros: $" + recaudoCarros);
+        System.out.println("Recaudo por motos: $" + recaudoMotos);
+        System.out.println("Total recaudado: $" + totalGeneral);
+    }
+
 }
