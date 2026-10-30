@@ -3,6 +3,7 @@ package app;
 
 import java.util.Scanner;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
@@ -11,7 +12,9 @@ public class Main {
 
     static Scanner scanner = new Scanner(System.in);
 
+
     // COMMIT 1: CREACION DEL PROYECTO Y MAIN
+
 
     public static void main(String[] args) {
 
@@ -56,50 +59,35 @@ public class Main {
         scanner.close();
     }
 
-    public static int leerEntero(String mensaje, int minimo, int maximo) {
-
-        int numero;
-
-        while (true) {
-
-            System.out.print(mensaje);
-
-            try {
-
-                numero = Integer.parseInt(scanner.nextLine());
-
-                if (numero >= minimo && numero <= maximo) {
-                    return numero;
-                }
-
-                System.out.println("Ingrese un valor entre "
-                        + minimo + " y " + maximo + ".");
-
-            } catch (NumberFormatException e) {
-
-                System.out.println("Error: debe ingresar un numero entero.");
-
-            }
-        }
-    }
 
     // COMMIT 2: CONSTANTES, VARIABLES Y ARREGLOS INICIALES
 
+
     static final int CAPACIDAD_TOTAL = 10;
+
+
 
     static final int TARIFA_HORA_CARRO = 4000;
     static final int TARIFA_DIA_CARRO = 30000;
 
+
+
     static final int TARIFA_HORA_MOTO = 2000;
     static final int TARIFA_DIA_MOTO = 15000;
+
+
 
     static final int UMBRAL_HORAS_DIA = 8;
     static final int HORA_APERTURA = 8;
     static final int HORA_CIERRE = 22;
 
+
+
     static final DateTimeFormatter FORMATO_FECHA =
             DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm")
                     .withResolverStyle(ResolverStyle.STRICT);
+
+
 
     static String[] tiposVehiculo =
             new String[CAPACIDAD_TOTAL];
@@ -107,13 +95,19 @@ public class Main {
     static LocalDateTime[] fechasIngreso =
             new LocalDateTime[CAPACIDAD_TOTAL];
 
+
+
     static int celdasOcupadas = 0;
     static int celdasLibres = CAPACIDAD_TOTAL;
+
+    // Variables de recaudo
 
     static long recaudoCarros = 0;
     static long recaudoMotos = 0;
 
+
     // COMMIT 3: REGISTRO DE ENTRADA
+
 
     public static void registroEntrada() {
 
@@ -162,7 +156,9 @@ public class Main {
                 + ingreso.format(FORMATO_FECHA));
     }
 
+
     // COMMIT 4: CELDAS DISPONIBLES
+
 
     public static int celdaDisponible() {
 
@@ -176,25 +172,74 @@ public class Main {
         return -1;
     }
 
+    // COMMIT 5: VALIDACION DE DATOS
+
+
+    public static int leerEntero(
+            String mensaje, int minimo, int maximo) {
+
+        while (true) {
+
+            System.out.print(mensaje);
+
+            String texto = scanner.nextLine().trim();
+
+            try {
+
+                int numero = Integer.parseInt(texto);
+
+                if (numero >= minimo && numero <= maximo) {
+                    return numero;
+                }
+
+            } catch (NumberFormatException e) {
+
+
+            }
+
+            System.out.println(
+                    "Dato invalido. Ingrese un numero entre "
+                            + minimo + " y " + maximo + ".");
+        }
+    }
+
+
     public static LocalDateTime leerFechaHora(String mensaje) {
 
         while (true) {
 
             System.out.print(mensaje);
 
-            String fechaTexto = scanner.nextLine();
+            String texto = scanner.nextLine().trim();
 
             try {
 
-                return LocalDateTime.parse(
-                        fechaTexto, FORMATO_FECHA);
+                LocalDateTime fecha = LocalDateTime.parse(
+                        texto, FORMATO_FECHA);
+
+                if (!fecha.format(FORMATO_FECHA).equals(texto)) {
+
+                    System.out.println("Formato de fecha incorrecto.");
+                    continue;
+                }
+
+                LocalTime hora = fecha.toLocalTime();
+
+                if (hora.isBefore(LocalTime.of(HORA_APERTURA, 0))
+                        || hora.isAfter(LocalTime.of(HORA_CIERRE, 0))) {
+
+                    System.out.println(
+                            "El horario permitido es de 08:00 a 22:00.");
+
+                    continue;
+                }
+
+                return fecha;
 
             } catch (DateTimeParseException e) {
 
                 System.out.println(
-                        "Fecha u hora incorrecta. "
-                                + "Use el formato yyyy-MM-dd HH:mm.");
-
+                        "Fecha invalida. Use yyyy-MM-dd HH:mm.");
             }
         }
     }
