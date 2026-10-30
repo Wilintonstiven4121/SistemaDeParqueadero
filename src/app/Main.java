@@ -1,20 +1,19 @@
 
-
 package app;
 
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 
 public class Main {
 
-    // =====================================================
-    // COMMIT 1: Git con la creación del proyecto y main
-    // =====================================================
-
-    // Scanner global
     static Scanner scanner = new Scanner(System.in);
+
+    // =====================================================
+    // COMMIT 1: CREACION DEL PROYECTO Y MAIN
+    // =====================================================
 
     public static void main(String[] args) {
 
@@ -59,7 +58,9 @@ public class Main {
         scanner.close();
     }
 
+    // =====================================================
     // VALIDACION DE OPCIONES DEL MENU
+    // =====================================================
 
     public static int leerEntero(String mensaje, int minimo, int maximo) {
 
@@ -88,30 +89,9 @@ public class Main {
         }
     }
 
-
-    // METODOS INICIALES DEL MENU
-
-    public static void registroEntrada() {
-        System.out.println("\nModulo de registro de entrada.");
-    }
-
-    public static void registroSalida() {
-        System.out.println("\nModulo de registro de salida.");
-    }
-
-    public static void reporteOcupacion() {
-        System.out.println("\nModulo de reporte de ocupacion.");
-    }
-
-    public static void reporteFinanciero() {
-        System.out.println("\nModulo de reporte financiero.");
-    }
-
-
-
-    // COMMIT 2: DECLARACION DE CONSTANTES, VARIABLES Y ARREGLOS INICIALES
-
-    // Capacidad del parqueadero
+    // =====================================================
+    // COMMIT 2: CONSTANTES, VARIABLES Y ARREGLOS INICIALES
+    // =====================================================
 
     static final int CAPACIDAD_TOTAL = 10;
 
@@ -155,4 +135,110 @@ public class Main {
     static long recaudoCarros = 0;
     static long recaudoMotos = 0;
 
+    // COMMIT 3: REGISTRO DE ENTRADA
+
+    public static void registroEntrada() {
+
+        if (celdasLibres == 0) {
+
+            System.out.println("El parqueadero esta lleno.");
+            return;
+        }
+
+        System.out.println("\n--- REGISTRO DE ENTRADA ---");
+        System.out.println("1. Carro");
+        System.out.println("2. Moto");
+
+        int opcion = leerEntero(
+                "Seleccione el tipo de vehiculo: ", 1, 2);
+
+        String tipo;
+
+        if (opcion == 1) {
+            tipo = "Carro";
+        } else {
+            tipo = "Moto";
+        }
+
+        LocalDateTime ingreso = leerFechaHora(
+                "Fecha y hora de ingreso (yyyy-MM-dd HH:mm): ");
+
+        int posicion = celdaDisponible();
+
+        if (posicion == -1) {
+
+            System.out.println("No hay celdas disponibles.");
+            return;
+        }
+
+        tiposVehiculo[posicion] = tipo;
+        fechasIngreso[posicion] = ingreso;
+
+        celdasOcupadas++;
+        celdasLibres--;
+
+        System.out.println("\nEntrada registrada correctamente.");
+        System.out.println("Celda asignada: " + (posicion + 1));
+        System.out.println("Tipo de vehiculo: " + tipo);
+        System.out.println("Fecha de ingreso: "
+                + ingreso.format(FORMATO_FECHA));
+    }
+
+    // BUSCAR CELDA DISPONIBLE
+
+    public static int celdaDisponible() {
+
+        for (int i = 0; i < CAPACIDAD_TOTAL; i++) {
+
+            if (tiposVehiculo[i] == null) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    // VALIDAR FECHA Y HORA DE INGRESO
+
+    public static LocalDateTime leerFechaHora(String mensaje) {
+
+        while (true) {
+
+            System.out.print(mensaje);
+
+            String fechaTexto = scanner.nextLine();
+
+            try {
+
+                return LocalDateTime.parse(
+                        fechaTexto, FORMATO_FECHA);
+
+            } catch (DateTimeParseException e) {
+
+                System.out.println(
+                        "Fecha u hora incorrecta. "
+                                + "Use el formato yyyy-MM-dd HH:mm.");
+
+            }
+        }
+    }
+
+    // METODOS PROVISIONALES DE LOS SIGUIENTES MODULOS
+
+    public static void registroSalida() {
+
+        System.out.println("\nModulo de registro de salida.");
+    }
+
+    public static void reporteOcupacion() {
+
+        System.out.println("\nModulo de reporte de ocupacion.");
+    }
+
+    public static void reporteFinanciero() {
+
+        System.out.println("\nModulo de reporte financiero.");
+    }
+
 }
+
