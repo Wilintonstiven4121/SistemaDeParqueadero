@@ -1,16 +1,20 @@
 
+
 package app;
 
 import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 
 public class Main {
-
-    // Scanner global
-    static Scanner scanner = new Scanner(System.in);
 
     // =====================================================
     // COMMIT 1: Git con la creación del proyecto y main
     // =====================================================
+
+    // Scanner global
+    static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
 
@@ -54,6 +58,9 @@ public class Main {
 
         scanner.close();
     }
+
+    // VALIDACION DE OPCIONES DEL MENU
+
     public static int leerEntero(String mensaje, int minimo, int maximo) {
 
         int numero;
@@ -80,6 +87,10 @@ public class Main {
             }
         }
     }
+
+
+    // METODOS INICIALES DEL MENU
+
     public static void registroEntrada() {
         System.out.println("\nModulo de registro de entrada.");
     }
@@ -95,5 +106,53 @@ public class Main {
     public static void reporteFinanciero() {
         System.out.println("\nModulo de reporte financiero.");
     }
+
+
+
+    // COMMIT 2: DECLARACION DE CONSTANTES, VARIABLES Y ARREGLOS INICIALES
+
+    // Capacidad del parqueadero
+
+    static final int CAPACIDAD_TOTAL = 10;
+
+    // Tarifas para carros
+
+    static final int TARIFA_HORA_CARRO = 4000;
+    static final int TARIFA_DIA_CARRO = 30000;
+
+    // Tarifas para motos
+
+    static final int TARIFA_HORA_MOTO = 2000;
+    static final int TARIFA_DIA_MOTO = 15000;
+
+    // Horarios y condiciones
+
+    static final int UMBRAL_HORAS_DIA = 8;
+    static final int HORA_APERTURA = 8;
+    static final int HORA_CIERRE = 22;
+
+    // Formato de fecha y hora
+
+    static final DateTimeFormatter FORMATO_FECHA =
+            DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm")
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+    // Arreglos para almacenar informacion de los vehiculos
+
+    static String[] tiposVehiculo =
+            new String[CAPACIDAD_TOTAL];
+
+    static LocalDateTime[] fechasIngreso =
+            new LocalDateTime[CAPACIDAD_TOTAL];
+
+    // Variables de ocupacion
+
+    static int celdasOcupadas = 0;
+    static int celdasLibres = CAPACIDAD_TOTAL;
+
+    // Variables de recaudo
+
+    static long recaudoCarros = 0;
+    static long recaudoMotos = 0;
 
 }
